@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>❤️ Amor con Propósito - Página Especial para Nathaly ❤️</title>
+<style>
+  /* Reset básico */
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+  body, html {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%);
+    color: #4b2e83;
+    overflow-x: hidden;
+  }
+
+  /* Contenedor principal oculto al inicio */
+  #app {
+    display: none;
+    min-height: 100vh;
+    padding: 20px;
+    background: radial-gradient(circle at center, #fff7e6 30%, #f8b500 90%);
+    position: relative;
+  }
+
+  /* Modal de contraseña */
+  #passwordModal {
+    position: fixed;
+    top:0; left:0; width: 100%; height: 100%;
+    background: rgba(75,46,131,0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    flex-direction: column;
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 600;
+    user-select: none;
+  }
+
+  #passwordModal h2 {
+    margin-bottom: 1rem;
+    font-family: 'Brush Script MT', cursive;
+    font-size: 2.8rem;
+    text-shadow: 0 0 8px #f8b500;
+  }
+
+  #passwordInput {
+    padding: 12px 15px;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    width: 280px;
+    max-width: 90vw;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 8px #fff3b0;
+    transition: box-shadow 0.3s ease;
+  }
+  #passwordInput:focus {
+    box-shadow: 0 0 15px #f8b500;
+  }
+
+  #passwordBtn {
+    background: #4b2e83;
+    color: #f8b500;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.3rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.4s ease;
+    box-shadow: 0 0 10px #f8b500;
+    user-select: none;
+  }
+  #passwordBtn:hover {
+    background: #2e1a57;
+  }
+
+  #errorMsg {
+    color: #ff4d4d;
+    font-weight: 700;
+    margin-top: 0.7rem;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  #errorMsg.visible {
+    opacity: 1;
+  }
+
+  /* Título principal */
+  h1.mainTitle {
+    font-family: 'Pacifico', cursive;
+    font-size: 3.5rem;
+    text-align: center;
+    margin-bottom: 15px;
+    color: #6339a6;
+    text-shadow: 0 0 8px #f8b500;
+  }
+
+  /* Subtítulo */
+  h3.subtitle {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    color: #552d99;
+  }
+
+  /* Contenido central */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff7e6cc;
+    border-radius: 25px;
+    box-shadow: 0 0 25px #e6ce5f80;
+    padding: 25px 30px;
+    position: relative;
+  }
+
+  /* Botón desbloquear mensaje */
+  #unlockBtn {
+    display: block;
+    margin: 25px auto 10px auto;
+    background: #4b2e83;
+    color: #f8b500;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 40px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 0 15px #f8b500;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+  }
+  #unlockBtn:hover:not(:disabled) {
+    background: #2e1a57;
+    box-shadow: 0 0 25px #ffde59;
+  }
+  #unlockBtn:disabled {
+    cursor: default;
+    opacity: 0.6;
+    box-shadow: none;
+  }
+
+  /* Mensaje secreto */
+  #secretMessage {
+    text-align: center;
+    font-size: 1.4rem;
+    font-style: italic;
+    margin-top: 20px;
+    opacity: 0;
+    transition: opacity 1s ease;
+    color: #4b2e83;
+    user-select: none;
+  }
+  #secretMessage.visible {
+    opacity: 1;
+  }
+
+  /* Galería fotos */
+  .gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 30px;
+  }
+  .gallery img {
+    width: 180px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 0 15px #f8b500aa;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .gallery img:hover {
+    transform: scale(1.1) rotate(3deg);
+    box-shadow: 0 0 30px #f8b500ff;
+  }
+
+  /* Animación corazones flotando */
+  .hearts {
+    pointer-events: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    top: 0;
+    left: 0;
+    z-index: 999;
+  }
+  .heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at center, #ff6b81 60%, #ff4d6d 100%);
+    transform: rotate(45deg);
+    animation-timing-function: linear;
+    opacity: 0.8;
+    filter: drop-shadow(0 0 3px #ff4d6d);
+    pointer-events: none;
+  }
+  .heart::before,
+  .heart::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at center, #ff6b81 60%, #ff4d6d 100%);
+    border-radius: 50%;
+  }
+  .heart::before {
+    top: -10px;
+    left: 0;
+  }
+  .heart::after {
+    left: 10px;
+    top: 0;
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0) rotate(45deg);
+      opacity: 0.8;
+    }
+    100% {
+      transform: translateY(-250px) rotate(45deg);
+      opacity: 0;
+    }
+  }
+
+  /* Botón reproducción música */
+  #musicToggle {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: #4b2e83cc;
+    border: none;
+    color: #f8b500;
+    padding: 12px 18px;
+    font-size: 1.2rem;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #f8b500;
+    user-select: none;
+    transition: background-color 0.3s ease;
+    z-index: 10000;
+  }
+  #musicToggle:hover {
+    background: #2e1a57cc;
+  }
+
+  /* Texto con efecto brillo */
+  .glowText {
+    color: #f8b500;
+    text-shadow:
+      0 0 5px #fff,
+      0 0 10px #f8b500,
+      0 0 20px #f8b500,
+      0 0 30px #f8b500,
+      0 0 40px #f8b500,
+      0 0 55px #f8b500,
+      0 0 75px #f8b500;
+  }
+
+  /* Animación para botón desbloquear */
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 15px #f8b500; }
+    50% { box-shadow: 0 0 25px #ffde59; }
+  }
+  #unlockBtn {
+    animation: pulse 3s infinite;
+  }
+</style>
+</head>
+<body>
+
+<!-- Modal para pedir contraseña -->
+<div id="passwordModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <h2 id="modalTitle">Escribe la contraseña para entrar 💜</h2>
+  <input id="passwordInput" type="password" aria-describedby="errorMsg" placeholder="Tu contraseña aquí..." autofocus />
+  <button id="passwordBtn" aria-label="Enviar contraseña">Entrar</button>
+  <p id="errorMsg" role="alert" aria-live="assertive"></p>
+</div>
+
+<!-- Contenido principal -->
+<div id="app" tabindex="-1" aria-label="Contenido principal de la página">
+
+  <h1 class="mainTitle glowText">Para Nathaly, con todo mi amor ❤️</h1>
+  <h3 class="subtitle">Porque el amor se demuestra con hechos y paciencia.</h3>
+
+  <div class="content">
+
+    <button id="unlockBtn" aria-expanded="false" aria-controls="secretMessage">Desbloquear mensaje especial</button>
+    <p id="secretMessage" aria-live="polite" aria-atomic="true"></p>
+
+    <!-- Galería de imágenes -->
+    <div class="gallery" aria-label="Galería de fotos especiales para Nathaly">
+      <img src="foto1.jpg" alt="Foto romántica 1" loading="lazy" />
+      <img src="foto2.jpg" alt="Foto romántica 2" loading="lazy" />
+      <img src="foto3.jpg" alt="Foto romántica 3" loading="lazy" />
+      <img src="foto4.jpg" alt="Foto romántica 4" loading="lazy" />
+      <img src="foto5.jpg" alt="Foto romántica 5" loading="lazy" />
+      <img src="foto6.jpg" alt="Foto romántica 6" loading="lazy" />
+      <img src="foto7.jpg" alt="Foto romántica 6" loading="lazy" />
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Botón para activar/desactivar música -->
+<button id="musicToggle" aria-pressed="false" aria-label="Reproducir o pausar música de fondo">🎵 Música</button>
+
+<!-- Contenedor para corazones flotantes -->
+<div class="hearts" aria-hidden="true"></div>
+<audio id="music" loop preload="auto" src="music.mp3"></audio>
+
+
+<script>
+  (function() {
+    const passwordModal = document.getElementById('passwordModal');
+    const passwordInput = document.getElementById('passwordInput');
+    const passwordBtn = document.getElementById('passwordBtn');
+    const errorMsg = document.getElementById('errorMsg');
+    const app = document.getElementById('app');
+
+    const unlockBtn = document.getElementById('unlockBtn');
+    const secretMessage = document.getElementById('secretMessage');
+
+    const musicToggle = document.getElementById('musicToggle');
+    const music = document.getElementById('music');
+
+    const heartsContainer = document.querySelector('.hearts');
+
+    // Contraseña a validar
+    const PASSWORD = 'amor de mi vida';
+
+    // Validar contraseña
+    function checkPassword() {
+      const val = passwordInput.value.trim().toLowerCase();
+      if(val === PASSWORD) {
+        // Ocultar modal y mostrar contenido
+        passwordModal.style.display = 'none';
+        app.style.display = 'block';
+        // Llevar el foco al contenido principal para accesibilidad
+        app.focus();
+      } else {
+        // Mostrar error
+        errorMsg.textContent = 'Contraseña incorrecta, intenta de nuevo 💜';
+        errorMsg.classList.add('visible');
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    }
+
+    passwordBtn.addEventListener('click', checkPassword);
+    passwordInput.addEventListener('keydown', e => {
+      if(e.key === 'Enter') {
+        checkPassword();
+      }
+    });
+
+    // Mensaje especial que se desbloquea
+    const mensaje = `Nathaly, eres la luz que ilumina mis días y la paz en mis noches. 
+    Gracias por tu paciencia, por tu amor constante, y por ser mi compañera en esta hermosa aventura. 
+    Te amo con todo mi corazón ❤️.`;
+
+    unlockBtn.addEventListener('click', () => {
+      if(secretMessage.classList.contains('visible')) return;
+      secretMessage.textContent = mensaje;
+      secretMessage.classList.add('visible');
+      unlockBtn.disabled = true;
+      unlockBtn.setAttribute('aria-expanded', 'true');
+    });
+
+    // Función para crear corazones flotantes
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+
+      // Posición horizontal aleatoria
+      heart.style.left = Math.random() * 100 + 'vw';
+
+      // Tamaño aleatorio (12px a 25px)
+      const size = 12 + Math.random() * 13;
+      heart.style.width = size + 'px';
+      heart.style.height = size + 'px';
+
+      // Animación de subida con duración aleatoria (4s a 7s)
+      const duration = 4000 + Math.random() * 3000;
+      heart.style.animation = `floatUp ${duration}ms linear forwards`;
+
+      // Posición inicial abajo
+      heart.style.bottom = '-30px';
+
+      heartsContainer.appendChild(heart);
+
+      // Remover después de la animación
+      setTimeout(() => {
+        heart.remove();
+      }, duration);
+    }
+
+    // Crear corazones cada 400ms (puedes ajustar)
+    setInterval(createHeart, 400);
+
+    // Control de música
+    musicToggle.addEventListener('click', () => {
+      if(music.paused) {
+        music.play();
+        musicToggle.setAttribute('aria-pressed', 'true');
+        musicToggle.textContent = '🔈 Pausar música';
+      } else {
+        music.pause();
+        musicToggle.setAttribute('aria-pressed', 'false');
+        musicToggle.textContent = '🎵 Música';
+      }
+    });
+
+    // Para iniciar música pausada, si quieres que empiece en silencio no la reproducimos automáticamente.
+    // Nota: Algunos navegadores bloquean reproducción automática sin interacción previa.
+
+  })();
+</script>
+
+</body>
+</html>
